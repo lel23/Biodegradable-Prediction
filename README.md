@@ -2,9 +2,9 @@
 
 Leslie Le and Joeseph Salerno
 
-### Feature Selection
+### Feature Selection: heatmap, Random Forest
 
-### Feature Extraction
+### Feature Extraction: LDA, PCA, KPCA
 
 ## Model: SVM
 
