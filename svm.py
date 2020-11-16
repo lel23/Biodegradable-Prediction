@@ -1,6 +1,6 @@
 """
-SVM Model
 Test 3
+SVM
 """
 
 from sklearn.model_selection import train_test_split
@@ -56,14 +56,21 @@ def plot_decision_regions(X, y, classifier, test_idx=None, resolution=0.02):
                     s=100, 
                     label='test set')
 
+# Reading data
+df = pd.read_csv('NewBioDegWCols.csv')
+df.columns = ['SpMax_L','J_Dz','nHM','F01','F04','NssssC','nCb-','C%','nCp',
+              'n0','F03CN','SdssC','HyWi_B','LOC','SM6_L','F03CO','Me','Mi',
+              'nN-N','nArN02','nCRX3','SpPosA_B','nCIR','B01','B03','N-073',
+              'SpMax_A','Psi_i_1d','B04','Sd0','TI2_L','nCrt','c-026','F02',
+              'nHDon','SpMax_B','Psi_i_A','nN','SM6_B','nArCOOR','nX','TAR']
 
-#read the data into a pandas dataframe
-df = pd.read_csv('Admission_Predict.csv')
-df.dropna(inplace=True)
+df['TAR'] = df['TAR'].replace(['RB', 'NRB'], [1, 0])
+df.replace(to_replace='NaN', value=np.nan, regex=True, inplace=True)
+# df.mean(), df.median()
+df.fillna(df.mean(), inplace=True)
 
-df.columns = ["No", "GRE", "TOEFL", "UR", "SOP", "LOR", "CGPA", "RES", "CoA", "RACE", "SES"]
 
-#print(df.describe())
+
 X = df[['GRE', 'TOEFL', 'CGPA']]
 y = df['CoA']
 
