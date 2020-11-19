@@ -15,6 +15,8 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_selection import SelectFromModel
 
 def plot_decision_regions(X, y, classifier, test_idx=None, resolution=0.02):
     # setup marker generator and color map
@@ -71,10 +73,15 @@ df.fillna(df.mean(), inplace=True)
 
 
 
-X = df[['GRE', 'TOEFL', 'CGPA']]
-y = df['CoA']
+
+X = df[[i for i in list(df.columns) if i != 'TAR']]
+y = df['TAR']
+feat_labels = X.columns
+
+
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state=1)
+
 
 # Standardizing the features:
 sc = StandardScaler()
@@ -82,19 +89,44 @@ sc.fit(X_train)
 X_train_std = sc.transform(X_train)
 X_test_std = sc.transform(X_test)
 
+forest = RandomForestClassifier(n_estimators=500,
+                                random_state=1)
+forest.fit(X, y)
+importances = forest.feature_importances_
+indices = np.argsort(importances)[::-1]
+for f in range(X.shape[1]):
+    print("%2d) %-*s %f" % (f + 1, 30, 
+                            feat_labels[indices[f]], 
+                            importances[indices[f]]))
+sfm = SelectFromModel(forest, prefit=True)
+X_selected = sfm.transform(X)
+print('Number of features that meet this threshold criterion:', 
+      X_selected.shape[1])
+print("Threshold %f" % np.mean(importances))
+# Now, let's print the  features that met the threshold criterion for feature selection that we set earlier (note that this code snippet does not appear in the actual book but was added to this notebook later for illustrative purposes):
+cols = []
+for f in range(X_selected.shape[1]):
+    cols.append(feat_labels[indices[f]])    
+    print("%2d) %-*s %f" % (f + 1, 30, 
+                            feat_labels[indices[f]], 
+                            importances[indices[f]]))
+X_train_std = X_train_std[:, :X_selected.shape[1]]
+X_test_std = X_test_std[: , :X_selected.shape[1]]
+
+
 svm = SVC(kernel='rbf', C=10.0, random_state=1)
-svm.fit(X_train_std, ty_train)
+svm.fit(X_train_std, y_train)
 svc_pred = svm.predict(X_test_std)
 
 
 X_combined_std = np.vstack((X_train_std[:, 1:], X_test_std[:, 1:]))
-y_combined = np.hstack((ty_train, ty_test))
-plot_decision_regions(X=X_combined_std, y=y_combined, classifier=SVC(kernel='rbf', C=10.0, random_state=1))
+y_combined = np.hstack((y_train, y_test))
+#plot_decision_regions(X=X_combined_std, y=y_combined, classifier=SVC(kernel='rbf', C=10.0, random_state=1))
 plt.savefig("svm.png")
 plt.show()
 
-print("SVM Accuracy: %.3f" % accuracy_score(ty_test, svc_pred))
-print("SVM F1-Score: %.3f" % f1_score(ty_test, svc_pred))
-print("SVM Precision: %.3f" % precision_score(ty_test, svc_pred))
-print("SVM Recall: %.3f" % recall_score(ty_test, svc_pred))
+print("SVM Accuracy: %.3f" % accuracy_score(y_test, svc_pred))
+print("SVM F1-Score: %.3f" % f1_score(y_test, svc_pred))
+print("SVM Precision: %.3f" % precision_score(y_test, svc_pred))
+print("SVM Recall: %.3f" % recall_score(y_test, svc_pred))
 
