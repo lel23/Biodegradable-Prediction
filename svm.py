@@ -17,6 +17,8 @@ from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import SelectFromModel
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import classification_report
 
 def plot_decision_regions(X, y, classifier, test_idx=None, resolution=0.02):
     # setup marker generator and color map
@@ -122,11 +124,19 @@ X_train_std = X_train_std[:, :X_selected.shape[1]]
 X_test_std = X_test_std[: , :X_selected.shape[1]]
 
 ##
+'''
+param_grid = {'C': [10, 15, 20, 25, 30, 35, 40, 45, 50], 
+              'kernel': ['rbf', 'sigmoid', 'linear', 'poly'],
+               'random_state': range(0,30),
+               'gamma': ['scale', 'auto']}
 
+lg = GridSearchCV(SVC(), param_grid, verbose = 0, scoring = 'accuracy')
+lg.fit(X_train_std, y_train)
+print()
+print(lg.best_params_)
+'''
 
-
-
-svm = SVC(kernel='rbf', C=10.0, random_state=1)
+svm = SVC(kernel='rbf', C=30.0, random_state=0, gamma = 'auto')
 svm.fit(X_train_std, y_train)
 svc_pred = svm.predict(X_test_std)
 
@@ -136,6 +146,8 @@ y_combined = np.hstack((y_train, y_test))
 #plot_decision_regions(X=X_combined_std, y=y_combined, classifier=SVC(kernel='rbf', C=10.0, random_state=1))
 plt.savefig("svm.png")
 plt.show()
+
+print(classification_report(y_test, svc_pred))
 
 print("SVM Accuracy: %.3f" % accuracy_score(y_test, svc_pred))
 print("SVM F1-Score: %.3f" % f1_score(y_test, svc_pred))
