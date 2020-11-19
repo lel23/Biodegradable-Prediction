@@ -9,7 +9,8 @@ import numpy as np
 import matplotlib.pyplot as plt 
 from matplotlib.colors import ListedColormap
 import tensorflow as tf
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler, MaxAbsScaler
+from sklearn.preprocessing import Normalizer, QuantileTransformer, PowerTransformer
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score
@@ -97,6 +98,12 @@ X_train, X_val, y_train, y_val = train_test_split(X_train, y_train,
 
 
 # Standardizing the features:
+    #Scalars: MinMax - lowers all scores
+    #         Robust - performs slightly worse than standard
+    #         MaxAbs - Lowers all scores
+    #         QuantileTransformer - Lowers all scores
+    #         powerTransformer - Lowers all scores
+     
 sc = StandardScaler()
 sc.fit(X_train)
 X_train_std = sc.transform(X_train)
@@ -140,7 +147,7 @@ print()
 print(lg.best_params_)
 '''
 
-svm = SVC(kernel='rbf', C=30.0, random_state=0, gamma = 'auto')
+svm = SVC(kernel='rbf', C=15.0, random_state=0, gamma = 'auto')
 svm.fit(X_train_std, y_train)
 svc_pred = svm.predict(X_test_std)
 
