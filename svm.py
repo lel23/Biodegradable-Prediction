@@ -72,9 +72,16 @@ df.replace(to_replace='NaN', value=np.nan, regex=True, inplace=True)
 df.fillna(df.mean(), inplace=True)
 
 
+#Remove features that cause a net increase in metrics when removed and
+#target feature, obv
+
+ 
+X = df[[i for i in list(df.columns) if i != 'TAR' and i!= 'C%'
+        and i!= 'F03CO' and i!= 'J_Dz'and i!= 'HyWi_B' and i!= ''
+        ]]
 
 
-X = df[[i for i in list(df.columns) if i != 'TAR']]
+
 y = df['TAR']
 feat_labels = X.columns
 
@@ -89,6 +96,7 @@ sc.fit(X_train)
 X_train_std = sc.transform(X_train)
 X_test_std = sc.transform(X_test)
 
+#random forest feature selection
 forest = RandomForestClassifier(n_estimators=500,
                                 random_state=1)
 forest.fit(X, y)
@@ -112,6 +120,10 @@ for f in range(X_selected.shape[1]):
                             importances[indices[f]]))
 X_train_std = X_train_std[:, :X_selected.shape[1]]
 X_test_std = X_test_std[: , :X_selected.shape[1]]
+
+##
+
+
 
 
 svm = SVC(kernel='rbf', C=10.0, random_state=1)
