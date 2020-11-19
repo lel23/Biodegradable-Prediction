@@ -89,7 +89,11 @@ feat_labels = X.columns
 
 
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state=1)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2,
+                                                    random_state=1)
+X_train, X_val, y_train, y_val = train_test_split(X_train, y_train,
+                                                  test_size=0.25,
+                                                  random_state=1)
 
 
 # Standardizing the features:
@@ -149,8 +153,13 @@ plt.show()
 
 print(classification_report(y_test, svc_pred))
 
-print("SVM Accuracy: %.3f" % accuracy_score(y_test, svc_pred))
-print("SVM F1-Score: %.3f" % f1_score(y_test, svc_pred))
-print("SVM Precision: %.3f" % precision_score(y_test, svc_pred))
-print("SVM Recall: %.3f" % recall_score(y_test, svc_pred))
+print("SVM Testing Accuracy: %.3f" % accuracy_score(y_test, svc_pred))
+print("SVM Testing F1-Score: %.3f" % f1_score(y_test, svc_pred))
+print("SVM Testing Precision: %.3f" % precision_score(y_test, svc_pred))
+print("SVM Testing Recall: %.3f" % recall_score(y_test, svc_pred))
+print()
+print("SVM Validation Accuracy: %.3f" % accuracy_score(y_val, svc_pred))
+print("SVM Validation F1-Score: %.3f" % f1_score(y_val, svc_pred))
+print("SVM Validation Precision: %.3f" % precision_score(y_val, svc_pred))
+print("SVM Validation Recall: %.3f" % recall_score(y_val, svc_pred))
 
