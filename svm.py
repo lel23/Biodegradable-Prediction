@@ -18,7 +18,7 @@ from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_selection import SelectFromModel
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, cross_val_score
 from sklearn.metrics import classification_report
 
 def plot_decision_regions(X, y, classifier, test_idx=None, resolution=0.02):
@@ -91,7 +91,7 @@ feat_labels = X.columns
 
 #5
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2,
-                                                    random_state=5)
+                                                    random_state=131)
 X_train, X_val, y_train, y_val = train_test_split(X_train, y_train,
                                                   test_size=0.25,
                                                   random_state=2)
@@ -148,6 +148,17 @@ print(lg.best_params_)
 '''
 
 svm = SVC(kernel='rbf', C=20.0, random_state=0, gamma = 'auto')
+
+
+scores = cross_val_score(svm, X_train, y_train, cv=5)
+print("CV Train Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+
+scores = cross_val_score(svm, X_test, y_test, cv=5)
+print("CV Test Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+
+scores = cross_val_score(svm, X_val, y_val, cv=5)
+print("CV Validation Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+
 svm.fit(X_train_std, y_train)
 svc_pred = svm.predict(X_test_std)
 
@@ -155,8 +166,8 @@ svc_pred = svm.predict(X_test_std)
 X_combined_std = np.vstack((X_train_std[:, 1:], X_test_std[:, 1:]))
 y_combined = np.hstack((y_train, y_test))
 #plot_decision_regions(X=X_combined_std, y=y_combined, classifier=SVC(kernel='rbf', C=10.0, random_state=1))
-plt.savefig("svm.png")
-plt.show()
+#plt.savefig("svm.png")
+#plt.show()
 
 print(classification_report(y_test, svc_pred))
 
@@ -164,9 +175,5 @@ print("SVM Testing Accuracy: %.3f" % accuracy_score(y_test, svc_pred))
 print("SVM Testing F1-Score: %.3f" % f1_score(y_test, svc_pred))
 print("SVM Testing Precision: %.3f" % precision_score(y_test, svc_pred))
 print("SVM Testing Recall: %.3f" % recall_score(y_test, svc_pred))
-print()
-print("SVM Validation Accuracy: %.3f" % accuracy_score(y_val, svc_pred))
-print("SVM Validation F1-Score: %.3f" % f1_score(y_val, svc_pred))
-print("SVM Validation Precision: %.3f" % precision_score(y_val, svc_pred))
-print("SVM Validation Recall: %.3f" % recall_score(y_val, svc_pred))
+
 
