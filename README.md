@@ -28,5 +28,6 @@ For scaling we tested as many scalars as we could on the given dataset. We check
 
 
 ## Why would this model be generalizable?
+In the end, we ended up producing a validation set with validation accuracy of 0.82 (+- 0.08). This ranges depending on the cv value we include for calculating the cross-validation score. However, we feel this range (given by a cv = 3) has the smallest range (cv = 5 being 0.8 (+- 0.14)) and may be most applicable. In this case, we can see that our model is fairly generalizable but obviously not perfectly generalizable. Regardless, it is still worth noting that this is validation set performs even better than those in my presentation paper and thus this model is not too overfit on the given dataset. 
 
 ## Sources
