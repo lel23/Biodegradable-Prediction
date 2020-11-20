@@ -89,12 +89,12 @@ y = df['TAR']
 feat_labels = X.columns
 
 
-
+#5
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2,
-                                                    random_state=1)
+                                                    random_state=5)
 X_train, X_val, y_train, y_val = train_test_split(X_train, y_train,
                                                   test_size=0.25,
-                                                  random_state=1)
+                                                  random_state=2)
 
 
 # Standardizing the features:
@@ -147,7 +147,7 @@ print()
 print(lg.best_params_)
 '''
 
-svm = SVC(kernel='rbf', C=15.0, random_state=0, gamma = 'auto')
+svm = SVC(kernel='rbf', C=20.0, random_state=0, gamma = 'auto')
 svm.fit(X_train_std, y_train)
 svc_pred = svm.predict(X_test_std)
 
