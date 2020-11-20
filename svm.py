@@ -88,13 +88,13 @@ X = df[[i for i in list(df.columns) if i != 'TAR' and i!= 'C%'
 y = df['TAR']
 feat_labels = X.columns
 
-
-#5
+#131
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2,
                                                     random_state=131)
+#54
 X_train, X_val, y_train, y_val = train_test_split(X_train, y_train,
                                                   test_size=0.25,
-                                                  random_state=2)
+                                                  random_state=54)
 
 
 # Standardizing the features:
@@ -115,10 +115,12 @@ forest = RandomForestClassifier(n_estimators=500,
 forest.fit(X, y)
 importances = forest.feature_importances_
 indices = np.argsort(importances)[::-1]
+
 for f in range(X.shape[1]):
     print("%2d) %-*s %f" % (f + 1, 30, 
                             feat_labels[indices[f]], 
                             importances[indices[f]]))
+    
 sfm = SelectFromModel(forest, prefit=True)
 X_selected = sfm.transform(X)
 print('Number of features that meet this threshold criterion:', 
@@ -128,9 +130,11 @@ print("Threshold %f" % np.mean(importances))
 cols = []
 for f in range(X_selected.shape[1]):
     cols.append(feat_labels[indices[f]])    
+    
     print("%2d) %-*s %f" % (f + 1, 30, 
                             feat_labels[indices[f]], 
-                            importances[indices[f]]))
+                       importances[indices[f]]))
+    
 X_train_std = X_train_std[:, :X_selected.shape[1]]
 X_test_std = X_test_std[: , :X_selected.shape[1]]
 
