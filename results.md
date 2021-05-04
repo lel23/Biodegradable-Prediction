@@ -1,7 +1,3 @@
-# Test 3
-
-Leslie Le and Joseph Salerno
-
 ## Feature Transformation
 For feature selection, the data was read in as a DataFrame. Then, we binarized the target feature, from RB and NRB to 1 and 0, respectively. Next, we replaced all the cells in the CSV file that was used to represent NaN values with numpy's NaN value. Then, instead of removing those values, we tried to replace the missing values with the mean or the median. There are two separate image files in the repository because using the mean or the median yielded a selection of different features. In the end, we decided to replace the missing values using the mean of the features because all the data points are relatively close together in terms of values.
 
